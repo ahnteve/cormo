@@ -161,7 +161,7 @@ export class PostgreSQLAdapter extends SQLAdapterBase {
   }
 
   /** @internal */
-  public async addColumn(model: string, column_property: any) {
+  public async addColumn(model: string, column_property: ColumnPropertyInternal) {
     const model_class = this._connection.models[model];
     const table_name = model_class.table_name;
     const column_name = column_property._dbname_us;
@@ -225,6 +225,11 @@ export class PostgreSQLAdapter extends SQLAdapterBase {
     } catch (error) {
       throw PostgreSQLAdapter.wrapError('unknown error', error);
     }
+  }
+
+  /** @internal */
+  public getAdapterTypeString(column_property: ColumnPropertyInternal): string | undefined {
+    return _propertyToSQL(column_property);
   }
 
   /** @internal */
@@ -596,6 +601,7 @@ export class PostgreSQLAdapter extends SQLAdapterBase {
       schema[column.column_name] = {
         required: column.is_nullable === 'NO',
         type,
+        adapter_type_string: column.data_type,
       };
     }
     return schema;

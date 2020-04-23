@@ -380,6 +380,12 @@ class Connection<AdapterType extends AdapterBase = AdapterBase> extends EventEmi
             changes.push({ message: `Change ${modelClass.table_name}.${column} to optional`, ignorable: true });
           }
         }
+
+        const expected_type = this._adapter.getAdapterTypeString(property);
+        const real_type = currentTable[property._dbname_us].adapter_type_string;
+        if (expected_type !== real_type) {
+          changes.push({ message: `Type different ${modelClass.table_name}.${column}: expected=${expected_type}, real=${real_type}`, ignorable: true });
+        }
       }
       for (const column in currentTable) {
         if (!_.find(modelClass._schema, { _dbname_us: column })) {

@@ -216,6 +216,10 @@ class PostgreSQLAdapter extends sql_base_1.SQLAdapterBase {
         }
     }
     /** @internal */
+    getAdapterTypeString(column_property) {
+        return _propertyToSQL(column_property);
+    }
+    /** @internal */
     async create(model, data, options) {
         const table_name = this._connection.models[model].table_name;
         const values = [];
@@ -575,6 +579,7 @@ class PostgreSQLAdapter extends sql_base_1.SQLAdapterBase {
             schema[column.column_name] = {
                 required: column.is_nullable === 'NO',
                 type,
+                adapter_type_string: column.data_type,
             };
         }
         return schema;

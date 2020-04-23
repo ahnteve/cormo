@@ -148,7 +148,7 @@ export class SQLite3Adapter extends SQLAdapterBase {
   }
 
   /** @internal */
-  public async addColumn(model: string, column_property: any) {
+  public async addColumn(model: string, column_property: ColumnPropertyInternal) {
     const model_class = this._connection.models[model];
     const table_name = model_class.table_name;
     const column_name = column_property._dbname_us;
@@ -187,6 +187,11 @@ export class SQLite3Adapter extends SQLAdapterBase {
     } catch (error) {
       throw SQLite3Adapter.wrapError('unknown error', error);
     }
+  }
+
+  /** @internal */
+  public getAdapterTypeString(column_property: ColumnPropertyInternal): string | undefined {
+    return _propertyToSQL(column_property);
   }
 
   /** @internal */
@@ -554,6 +559,7 @@ export class SQLite3Adapter extends SQLAdapterBase {
       schema[column.name] = {
         required: column.notnull === 1,
         type,
+        adapter_type_string: column.type,
       };
     }
     return schema;

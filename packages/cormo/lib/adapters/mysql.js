@@ -250,6 +250,10 @@ class MySQLAdapter extends sql_base_1.SQLAdapterBase {
         }
     }
     /** @internal */
+    getAdapterTypeString(column_property) {
+        return _propertyToSQL(column_property, this.support_fractional_seconds);
+    }
+    /** @internal */
     async create(model, data, options) {
         const table_name = this._connection.models[model].table_name;
         const values = [];
@@ -735,10 +739,11 @@ class MySQLAdapter extends sql_base_1.SQLAdapterBase {
                         : /^int/i.test(column.Type) ? new types.Integer()
                             : /^point/i.test(column.Type) ? new types.GeoPoint()
                                 : /^datetime/i.test(column.Type) ? new types.Date()
-                                    : /^text/i.test(column.Type) ? new types.Object() : undefined;
+                                    : /^text/i.test(column.Type) ? new types.Text() : undefined;
             schema[column.Field] = {
                 required: column.Null === 'NO',
                 type,
+                adapter_type_string: column.Type,
             };
         }
         return schema;

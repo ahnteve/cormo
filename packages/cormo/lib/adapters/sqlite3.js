@@ -183,6 +183,10 @@ class SQLite3Adapter extends sql_base_1.SQLAdapterBase {
         }
     }
     /** @internal */
+    getAdapterTypeString(column_property) {
+        return _propertyToSQL(column_property);
+    }
+    /** @internal */
     async create(model, data, options) {
         const table_name = this._connection.models[model].table_name;
         const values = [];
@@ -543,6 +547,7 @@ class SQLite3Adapter extends sql_base_1.SQLAdapterBase {
             schema[column.name] = {
                 required: column.notnull === 1,
                 type,
+                adapter_type_string: column.type,
             };
         }
         return schema;
